@@ -39,6 +39,8 @@ router.get('/', getAllIngredients);
  *                 type: string
  *               availableQuantity:
  *                 type: integer
+ *               lowStockThreshold:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Ingredient created
@@ -73,6 +75,26 @@ router.get('/:id', getIngredientById);
  *         schema:
  *           type: integer
  *         required: true
+ *         description: Numeric ID of the ingredient to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Oats
+ *               description:
+ *                 type: string
+ *                 example: Organic whole grain oats
+ *               availableQuantity:
+ *                 type: integer
+ *                 example: 50
+ *               lowStockThreshold:
+ *                 type: integer
+ *                 example: 10
  *     responses:
  *       200:
  *         description: Ingredient updated

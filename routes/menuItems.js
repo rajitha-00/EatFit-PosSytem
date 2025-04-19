@@ -42,10 +42,27 @@ router.get('/', getAllMenuItems);
  *                 type: array
  *                 items:
  *                   type: object
+ *                   properties:
+ *                     ingredientId:
+ *                       type: integer
+ *                       example: 1
+ *                     quantityNeeded:
+ *                       type: integer
+ *                       example: 2
  *               addons:
  *                 type: array
  *                 items:
  *                   type: object
+ *                   properties:
+ *                     ingredientId:
+ *                       type: integer
+ *                       example: 3
+ *                     quantityNeeded:
+ *                       type: integer
+ *                       example: 1
+ *                     price:
+ *                       type: number
+ *                       example: 0.50
  *     responses:
  *       201:
  *         description: Menu item created
@@ -80,6 +97,47 @@ router.get('/:id', getMenuItemById);
  *         schema:
  *           type: integer
  *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Oatmeal Delight
+ *               description:
+ *                 type: string
+ *                 example: Warm oats with toppings
+ *               price:
+ *                 type: number
+ *                 example: 5.99
+ *               ingredients:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     ingredientId:
+ *                       type: integer
+ *                       example: 1
+ *                     quantityNeeded:
+ *                       type: integer
+ *                       example: 2
+ *               addons:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     ingredientId:
+ *                       type: integer
+ *                       example: 3
+ *                     quantityNeeded:
+ *                       type: integer
+ *                       example: 1
+ *                     price:
+ *                       type: number
+ *                       example: 0.50
  *     responses:
  *       200:
  *         description: Menu item updated

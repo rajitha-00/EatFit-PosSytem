@@ -1,10 +1,9 @@
-// controllers/orderCtrl.js
 const Order = require('../models/Order');
 const MenuItem = require('../models/MenuItem');
 const Ingredient = require('../models/Ingredient');
 
 exports.placeOrder = async (req, res) => {
-    const { items } = req.body;
+    const { customerName, customerPhone, orderType, items } = req.body;
     if (!Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ error: 'Order must have at least one item' });
     }
@@ -29,10 +28,21 @@ exports.placeOrder = async (req, res) => {
                 }
             }
         }
+
         // Save order
-        const order = new Order({ items });
+        const order = new Order({ customerName, customerPhone, orderType, items });
         await order.save();
         res.status(201).json(order);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// ✅ New: Get all orders
+exports.getAllOrders = async (_req, res) => {
+    try {
+        const orders = await Order.find().sort({ orderDate: -1 }); // newest first
+        res.json(orders);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
