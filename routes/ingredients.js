@@ -1,4 +1,3 @@
-// routes/ingredients.js
 const express = require('express');
 const router = express.Router();
 const {
@@ -46,6 +45,33 @@ router.get('/', getAllIngredients);
  *         description: Ingredient created
  */
 router.post('/', createIngredient);
+
+/**
+ * @swagger
+ * /ingredients/low-stock:
+ *   get:
+ *     summary: Get all ingredients that are low in stock
+ *     description: Returns ingredients whose available quantity is less than or equal to their defined threshold.
+ *     responses:
+ *       200:
+ *         description: A list of low-stock ingredients
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                     example: Oats
+ *                   availableQuantity:
+ *                     type: integer
+ *                     example: 3
+ *       500:
+ *         description: Server error
+ */
+router.get('/low-stock', getLowStockIngredients); // 🔁 moved ABOVE `/:id` routes
 
 /**
  * @swagger
@@ -117,32 +143,5 @@ router.put('/:id', updateIngredient);
  *         description: Ingredient deleted
  */
 router.delete('/:id', deleteIngredient);
-
-/**
- * @swagger
- * /ingredients/low-stock:
- *   get:
- *     summary: Get all ingredients that are low in stock
- *     description: Returns ingredients whose available quantity is less than or equal to their defined threshold.
- *     responses:
- *       200:
- *         description: A list of low-stock ingredients
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   name:
- *                     type: string
- *                     example: Oats
- *                   availableQuantity:
- *                     type: integer
- *                     example: 3
- *       500:
- *         description: Server error
- */
-router.get('/low-stock', getLowStockIngredients);
 
 module.exports = router;

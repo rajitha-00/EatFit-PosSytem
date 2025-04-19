@@ -1,7 +1,12 @@
 // routes/orders.js
 const express = require('express');
 const router = express.Router();
-const { placeOrder, getAllOrders } = require('../controllers/orderCtrl');
+const {
+    placeOrder,
+    getAllOrders,
+    getPreparingOrders,
+    updateOrderStatus
+} = require('../controllers/orderCtrl');
 
 /**
  * @swagger
@@ -24,6 +29,9 @@ const { placeOrder, getAllOrders } = require('../controllers/orderCtrl');
  *               orderType:
  *                 type: string
  *                 example: Takeaway
+ *               orderStatus:
+ *                 type: string
+ *                 example: Pending
  *               items:
  *                 type: array
  *                 items:
@@ -64,6 +72,8 @@ router.post('/', placeOrder);
  *                     type: string
  *                   orderType:
  *                     type: string
+ *                   orderStatus:
+ *                     type: string
  *                   orderDate:
  *                     type: string
  *                     format: date-time
@@ -82,5 +92,44 @@ router.post('/', placeOrder);
  *                             type: integer
  */
 router.get('/', getAllOrders);
+
+/**
+ * @swagger
+ * /orders/preparing:
+ *   get:
+ *     summary: Get all orders with status "Preparing"
+ *     responses:
+ *       200:
+ *         description: A list of preparing orders
+ */
+router.get('/preparing', getPreparingOrders);
+
+/**
+ * @swagger
+ * /orders/{id}/status:
+ *   patch:
+ *     summary: Update the status of an order
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               orderStatus:
+ *                 type: string
+ *                 example: Completed
+ *     responses:
+ *       200:
+ *         description: Order status updated
+ */
+router.patch('/:id/status', updateOrderStatus);
 
 module.exports = router;
