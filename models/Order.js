@@ -13,6 +13,7 @@ const OrderSchema = new mongoose.Schema({
     orderType: { type: String, required: true },
     orderStatus: { type: String, required: true },
     items: { type: [OrderItemSchema], required: true },
+    totalPrice: { type: Number, required: true },
     orderDate: { type: Date, default: Date.now }
 });
 

@@ -32,6 +32,9 @@ const {
  *               orderStatus:
  *                 type: string
  *                 example: Pending
+ *               totalPrice:
+ *                 type: number
+ *                 example: 19.99
  *               items:
  *                 type: array
  *                 items:
@@ -74,6 +77,8 @@ router.post('/', placeOrder);
  *                     type: string
  *                   orderStatus:
  *                     type: string
+ *                   totalPrice:
+ *                     type: number
  *                   orderDate:
  *                     type: string
  *                     format: date-time
@@ -133,4 +138,3 @@ router.get('/preparing', getPreparingOrders);
 router.patch('/:id/status', updateOrderStatus);
 
 module.exports = router;
-
