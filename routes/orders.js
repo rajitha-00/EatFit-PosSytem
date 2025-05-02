@@ -44,10 +44,17 @@ const {
  *                       type: integer
  *                     quantity:
  *                       type: integer
- *                     selectedAddonIngredientIds:
+ *                     selectedAddons:
  *                       type: array
  *                       items:
- *                         type: integer
+ *                         type: object
+ *                         properties:
+ *                           ingredientId:
+ *                             type: integer
+ *                             example: 3
+ *                           quantity:
+ *                             type: integer
+ *                             example: 2
  *     responses:
  *       201:
  *         description: Order placed
@@ -91,10 +98,15 @@ router.post('/', placeOrder);
  *                           type: integer
  *                         quantity:
  *                           type: integer
- *                         selectedAddonIngredientIds:
+ *                         selectedAddons:
  *                           type: array
  *                           items:
- *                             type: integer
+ *                             type: object
+ *                             properties:
+ *                               ingredientId:
+ *                                 type: integer
+ *                               quantity:
+ *                                 type: integer
  */
 router.get('/', getAllOrders);
 

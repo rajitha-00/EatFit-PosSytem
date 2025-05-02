@@ -4,8 +4,17 @@ const mongoose = require('mongoose');
 const OrderItemSchema = new mongoose.Schema({
     menuItemId: { type: Number, required: true },
     quantity: { type: Number, required: true },
-    selectedAddonIngredientIds: { type: [Number], default: [] }
+    selectedAddons: {
+        type: [
+            {
+                ingredientId: { type: Number, required: true },
+                quantity: { type: Number, required: true }
+            }
+        ],
+        default: []
+    }
 }, { _id: false });
+
 
 const OrderSchema = new mongoose.Schema({
     customerName: { type: String, required: true },
