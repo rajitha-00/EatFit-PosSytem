@@ -48,3 +48,36 @@ exports.placeOrder = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.getAllOrders = async (_req, res) => {
+    try {
+        const orders = await Order.find().sort({ orderDate: -1 });
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getPreparingOrders = async (_req, res) => {
+    try {
+        const preparingOrders = await Order.find({ orderStatus: "Preparing" }).sort({ orderDate: -1 });
+        res.json(preparingOrders);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.updateOrderStatus = async (req, res) => {
+    const { id } = req.params;
+    const { orderStatus } = req.body;
+
+    try {
+        const updatedOrder = await Order.findByIdAndUpdate(id, { orderStatus }, { new: true });
+        if (!updatedOrder) return res.status(404).json({ error: 'Order not found' });
+        res.json(updatedOrder);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+
