@@ -1,3 +1,4 @@
+// routes/ingredients.js
 const express = require('express');
 const router = express.Router();
 const {
@@ -40,6 +41,9 @@ router.get('/', getAllIngredients);
  *                 type: integer
  *               lowStockThreshold:
  *                 type: integer
+ *               updatedUser:
+ *                 type: string
+ *                 example: admin@example.com
  *     responses:
  *       201:
  *         description: Ingredient created
@@ -71,7 +75,7 @@ router.post('/', createIngredient);
  *       500:
  *         description: Server error
  */
-router.get('/low-stock', getLowStockIngredients); // 🔁 moved ABOVE `/:id` routes
+router.get('/low-stock', getLowStockIngredients);
 
 /**
  * @swagger
@@ -121,6 +125,9 @@ router.get('/:id', getIngredientById);
  *               lowStockThreshold:
  *                 type: integer
  *                 example: 10
+ *               updatedUser:
+ *                 type: string
+ *                 example: admin@example.com
  *     responses:
  *       200:
  *         description: Ingredient updated

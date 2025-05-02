@@ -49,7 +49,6 @@ exports.placeOrder = async (req, res) => {
     }
 };
 
-// ✅ Get all orders
 exports.getAllOrders = async (_req, res) => {
     try {
         const orders = await Order.find().sort({ orderDate: -1 });

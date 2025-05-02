@@ -34,9 +34,17 @@ router.get('/', getAllMenuItems);
  *             properties:
  *               name:
  *                 type: string
+ *               mainCategory:
+ *                 type: string
+ *               menuCategory:
+ *                 type: string
  *               description:
  *                 type: string
  *               price:
+ *                 type: number
+ *               webPrice:
+ *                 type: number
+ *               uberPrice:
  *                 type: number
  *               ingredients:
  *                 type: array
@@ -107,12 +115,24 @@ router.get('/:id', getMenuItemById);
  *               name:
  *                 type: string
  *                 example: Oatmeal Delight
+ *               mainCategory:
+ *                 type: string
+ *                 example: Breakfast
+ *               menuCategory:
+ *                 type: string
+ *                 example: Vegan
  *               description:
  *                 type: string
  *                 example: Warm oats with toppings
  *               price:
  *                 type: number
  *                 example: 5.99
+ *               webPrice:
+ *                 type: number
+ *                 example: 5.49
+ *               uberPrice:
+ *                 type: number
+ *                 example: 6.25
  *               ingredients:
  *                 type: array
  *                 items:

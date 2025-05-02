@@ -7,7 +7,9 @@ const IngredientSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String },
     availableQuantity: { type: Number, default: 0 },
-    lowStockThreshold: { type: Number, default: 0 }  // 🔥 New field
+    lowStockThreshold: { type: Number, default: 0 },
+    updatedUser: { type: String , required: true},
+    updatedDate: { type: Date, default: Date.now }
 }, { _id: false });
 
 

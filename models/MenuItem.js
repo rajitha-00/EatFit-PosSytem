@@ -17,8 +17,12 @@ const AddonSchema = new mongoose.Schema({
 const MenuItemSchema = new mongoose.Schema({
     _id: { type: Number },
     name: { type: String, required: true },
+    mainCategory: { type: String, required: false },
+    menuCategory: { type: String, required: false },
     description: { type: String },
     price: { type: Number, required: true },
+    webPrice: { type: Number, required: false },
+    uberPrice: { type: Number, required: false },
     ingredients: { type: [MenuItemIngredientSchema], default: [] },
     addons: { type: [AddonSchema], default: [] }
 }, { _id: false });
