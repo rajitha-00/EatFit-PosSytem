@@ -3,38 +3,35 @@ const MenuItem = require('../models/MenuItem');
 const Ingredient = require('../models/Ingredient');
 const Counter = require('../models/Counter'); // ✅ Add this line
 
-async function getNextOrderId(platform) {
-    const key = platform === 'UBER' ? 'uberOrderId' : 'pickmeOrderId';
-    const prefix = platform === 'UBER' ? 'UB' : 'PM';
-
+async function getNextOrderId() {
     const counter = await Counter.findByIdAndUpdate(
-        key,
+        'autoOrderId',
         { $inc: { seq: 1 } },
         { new: true, upsert: true }
     );
-
     const number = counter.seq.toString().padStart(3, '0');
-    return `${prefix}-${number}`;
+    return `OD-${number}`;
 }
 
 exports.placeOrder = async (req, res) => {
-    const { customerName, customerPhone, orderType, orderStatus, totalPrice, items, orderId: clientOrderId } = req.body;
+    const { orderId: clientOrderId, customerName, customerPhone, orderType, orderStatus, totalPrice, items } = req.body;
 
     if (!Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ error: 'Order must have at least one item' });
     }
 
     try {
-        // 🔽 Determine orderId based on orderType
+        // Validate or generate orderId
+        const specialTypes = ["Uber Delivery", "Pick Me Delivery", "Pick Me Pickup"];
         let orderId;
-        if (orderType === 'Uber Delivery') {
-            orderId = await getNextOrderId('UBER');
-        } else if (orderType === 'Pick Me Delivery' || orderType === 'Pick Me Pickup') {
-            orderId = await getNextOrderId('PICKME');
-        } else if (!clientOrderId) {
-            return res.status(400).json({ error: 'orderId is required for non-Uber/PickMe orders' });
-        } else {
+
+        if (specialTypes.includes(orderType)) {
+            if (!clientOrderId) {
+                return res.status(400).json({ error: 'orderId is required for Uber or Pick Me orders' });
+            }
             orderId = clientOrderId;
+        } else {
+            orderId = await getNextOrderId();
         }
 
         for (const orderItem of items) {
@@ -49,7 +46,7 @@ exports.placeOrder = async (req, res) => {
                 await Ingredient.findByIdAndUpdate(mi.ingredientId, { $inc: { availableQuantity: -qty } });
             }
 
-            // Deduct addon ingredients based on user-selected quantities
+            // Deduct addon ingredients
             for (const selectedAddon of orderItem.selectedAddons || []) {
                 const addon = menuItem.addons.find(a => a.ingredientId === selectedAddon.ingredientId);
                 if (addon) {
@@ -59,9 +56,9 @@ exports.placeOrder = async (req, res) => {
             }
         }
 
-        // Save order including generated or provided orderId
+        // Save order
         const order = new Order({
-            orderId,
+            OrderId: orderId, // ✅ Note: matches your schema field name
             customerName,
             customerPhone,
             orderType,
