@@ -20,6 +20,10 @@ const {
  *           schema:
  *             type: object
  *             properties:
+ *               orderId:
+ *                 type: string
+ *                 example: CUSTOM-001
+ *                 description: Required only for non-Uber/PickMe orders. For Uber or PickMe orders, this is auto-generated.
  *               customerName:
  *                 type: string
  *                 example: John Doe
@@ -29,6 +33,7 @@ const {
  *               orderType:
  *                 type: string
  *                 example: Takeaway
+ *                 description: One of "Uber Delivery", "Pick Me Delivery", "Pick Me Pickup", or other custom types
  *               orderStatus:
  *                 type: string
  *                 example: Pending

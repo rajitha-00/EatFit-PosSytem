@@ -1,15 +1,42 @@
 const Order = require('../models/Order');
 const MenuItem = require('../models/MenuItem');
 const Ingredient = require('../models/Ingredient');
+const Counter = require('../models/Counter'); // ✅ Add this line
+
+async function getNextOrderId(platform) {
+    const key = platform === 'UBER' ? 'uberOrderId' : 'pickmeOrderId';
+    const prefix = platform === 'UBER' ? 'UB' : 'PM';
+
+    const counter = await Counter.findByIdAndUpdate(
+        key,
+        { $inc: { seq: 1 } },
+        { new: true, upsert: true }
+    );
+
+    const number = counter.seq.toString().padStart(3, '0');
+    return `${prefix}-${number}`;
+}
 
 exports.placeOrder = async (req, res) => {
-    const { customerName, customerPhone, orderType, orderStatus, totalPrice, items } = req.body;
+    const { customerName, customerPhone, orderType, orderStatus, totalPrice, items, orderId: clientOrderId } = req.body;
 
     if (!Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ error: 'Order must have at least one item' });
     }
 
     try {
+        // 🔽 Determine orderId based on orderType
+        let orderId;
+        if (orderType === 'Uber Delivery') {
+            orderId = await getNextOrderId('UBER');
+        } else if (orderType === 'Pick Me Delivery' || orderType === 'Pick Me Pickup') {
+            orderId = await getNextOrderId('PICKME');
+        } else if (!clientOrderId) {
+            return res.status(400).json({ error: 'orderId is required for non-Uber/PickMe orders' });
+        } else {
+            orderId = clientOrderId;
+        }
+
         for (const orderItem of items) {
             const menuItem = await MenuItem.findById(orderItem.menuItemId);
             if (!menuItem) {
@@ -32,8 +59,9 @@ exports.placeOrder = async (req, res) => {
             }
         }
 
-        // Save order with client-provided totalPrice
+        // Save order including generated or provided orderId
         const order = new Order({
+            orderId,
             customerName,
             customerPhone,
             orderType,
