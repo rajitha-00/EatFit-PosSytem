@@ -1,7 +1,7 @@
 const Order = require('../models/Order');
 const MenuItem = require('../models/MenuItem');
 const Ingredient = require('../models/Ingredient');
-const Counter = require('../models/Counter'); // ✅ Add this line
+const Counter = require('../models/Counter');
 
 async function getNextOrderId() {
     const counter = await Counter.findByIdAndUpdate(
