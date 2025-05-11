@@ -23,17 +23,18 @@ exports.placeOrder = async (req, res) => {
     try {
         // Validate or generate orderId
         const specialTypes = ["Uber Delivery", "Pick Me Delivery", "Pick Me Pickup"];
-        let ClientOrderId;
+        let finalOrderId;
 
         if (specialTypes.includes(orderType)) {
             if (!orderId) {
                 return res.status(400).json({ error: 'orderId is required for Uber or Pick Me orders' });
             }
-            ClientOrderId = orderId;
+            finalOrderId = orderId;
         } else {
-            ClientOrderId = await getNextOrderId();
+            finalOrderId = await getNextOrderId();
         }
 
+        // Check and deduct stock
         for (const orderItem of items) {
             const menuItem = await MenuItem.findById(orderItem.menuItemId);
             if (!menuItem) {
@@ -43,22 +44,54 @@ exports.placeOrder = async (req, res) => {
             // Deduct base ingredients
             for (const mi of menuItem.ingredients) {
                 const qty = mi.quantityNeeded * orderItem.quantity;
-                await Ingredient.findByIdAndUpdate(mi.ingredientId, { $inc: { availableQuantity: -qty } });
+
+                const ingredient = await Ingredient.findById(mi.ingredientId);
+                if (!ingredient) {
+                    return res.status(404).json({ error: `Ingredient ${mi.ingredientId} not found` });
+                }
+
+                if (ingredient.availableQuantity < qty) {
+                    return res.status(400).json({
+                        error: `Insufficient stock for ingredient: ${ingredient.name}`
+                    });
+                }
+
+                await Ingredient.findByIdAndUpdate(mi.ingredientId, {
+                    $inc: { availableQuantity: -qty },
+                    $set: { updatedDate: new Date() }
+                });
             }
 
             // Deduct addon ingredients
             for (const selectedAddon of orderItem.selectedAddons || []) {
-                const addon = menuItem.addons.find(a => a.ingredientId === selectedAddon.ingredientId);
+                const addon = menuItem.addons.find(
+                    a => a.ingredientId === selectedAddon.ingredientId
+                );
                 if (addon) {
                     const totalQty = addon.quantityNeeded * selectedAddon.quantity;
-                    await Ingredient.findByIdAndUpdate(selectedAddon.ingredientId, { $inc: { availableQuantity: -totalQty } });
+
+                    const ingredient = await Ingredient.findById(selectedAddon.ingredientId);
+                    if (!ingredient) {
+                        return res.status(404).json({ error: `Addon ingredient ${selectedAddon.ingredientId} not found` });
+                    }
+
+                    if (ingredient.availableQuantity < totalQty) {
+                        return res.status(400).json({
+                            error: `Insufficient stock for addon ingredient: ${ingredient.name}`
+                        });
+                    }
+
+                    await Ingredient.findByIdAndUpdate(selectedAddon.ingredientId, {
+                        $inc: { availableQuantity: -totalQty },
+                        $set: { updatedDate: new Date() }
+                    });
                 }
             }
         }
 
         // Save order
         const order = new Order({
-            orderId : ClientOrderId, // ✅ Note: matches your schema field name
+            orderId: finalOrderId,
             customerName,
             customerPhone,
             orderType,
@@ -70,6 +103,7 @@ exports.placeOrder = async (req, res) => {
         await order.save();
         res.status(201).json(order);
     } catch (err) {
+        console.error('Order placement error:', err);
         res.status(500).json({ error: err.message });
     }
 };
