@@ -58,7 +58,7 @@ exports.placeOrder = async (req, res) => {
 
         // Save order
         const order = new Order({
-            ClientOrderId, // ✅ Note: matches your schema field name
+            orderId : ClientOrderId, // ✅ Note: matches your schema field name
             customerName,
             customerPhone,
             orderType,
