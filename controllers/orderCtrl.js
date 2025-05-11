@@ -14,7 +14,7 @@ async function getNextOrderId() {
 }
 
 exports.placeOrder = async (req, res) => {
-    const { orderId: clientOrderId, customerName, customerPhone, orderType, orderStatus, totalPrice, items } = req.body;
+    const { orderId, customerName, customerPhone, orderType, orderStatus, totalPrice, items } = req.body;
 
     if (!Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ error: 'Order must have at least one item' });
@@ -23,15 +23,15 @@ exports.placeOrder = async (req, res) => {
     try {
         // Validate or generate orderId
         const specialTypes = ["Uber Delivery", "Pick Me Delivery", "Pick Me Pickup"];
-        let orderId;
+        let ClientOrderId;
 
         if (specialTypes.includes(orderType)) {
-            if (!clientOrderId) {
+            if (!orderId) {
                 return res.status(400).json({ error: 'orderId is required for Uber or Pick Me orders' });
             }
-            orderId = clientOrderId;
+            ClientOrderId = orderId;
         } else {
-            orderId = await getNextOrderId();
+            ClientOrderId = await getNextOrderId();
         }
 
         for (const orderItem of items) {
@@ -58,7 +58,7 @@ exports.placeOrder = async (req, res) => {
 
         // Save order
         const order = new Order({
-            OrderId: orderId, // ✅ Note: matches your schema field name
+            ClientOrderId, // ✅ Note: matches your schema field name
             customerName,
             customerPhone,
             orderType,
