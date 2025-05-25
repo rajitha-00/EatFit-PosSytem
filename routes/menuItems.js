@@ -40,10 +40,16 @@ router.get('/', getAllMenuItems);
  *                 type: string
  *               description:
  *                 type: string
+ *               protein:
+ *                  type: number
+ *                  example: 10.00
  *               webPrice:
  *                 type: number
  *               uberPrice:
  *                 type: number
+ *               inHousePrice:
+ *                  type: number
+ *                  example: 2.25
  *               ingredients:
  *                 type: array
  *                 items:
@@ -122,12 +128,18 @@ router.get('/:id', getMenuItemById);
  *               description:
  *                 type: string
  *                 example: Warm oats with toppings
+ *               protein:
+ *                  type: number
+ *                  example: 10.00
  *               webPrice:
  *                 type: number
  *                 example: 5.49
  *               uberPrice:
  *                 type: number
  *                 example: 6.25
+ *               inHousePrice:
+ *                  type: number
+ *                  example: 2.25
  *               ingredients:
  *                 type: array
  *                 items:
