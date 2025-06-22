@@ -47,9 +47,8 @@ router.get('/', getAllMenuItems);
  *                 type: number
  *               uberPrice:
  *                 type: number
- *               inHousePrice:
- *                  type: number
- *                  example: 2.25
+ *               halal:
+ *                 type: boolean
  *               ingredients:
  *                 type: array
  *                 items:
@@ -75,11 +74,32 @@ router.get('/', getAllMenuItems);
  *                     price:
  *                       type: number
  *                       example: 0.50
+ *               nutrition:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     protein:
+ *                       type: number
+ *                       example: 10
+ *                     fat:
+ *                       type: number
+ *                       example: 5
+ *                     carbs:
+ *                       type: number
+ *                       example: 20
+ *                     sugar:
+ *                       type: number
+ *                       example: 8
+ *                     calories:
+ *                       type: number
+ *                       example: 180
  *     responses:
  *       201:
  *         description: Menu item created
  */
 router.post('/', createMenuItem);
+
 
 /**
  * @swagger
@@ -128,18 +148,15 @@ router.get('/:id', getMenuItemById);
  *               description:
  *                 type: string
  *                 example: Warm oats with toppings
- *               protein:
- *                  type: number
- *                  example: 10.00
  *               webPrice:
  *                 type: number
  *                 example: 5.49
  *               uberPrice:
  *                 type: number
  *                 example: 6.25
- *               inHousePrice:
- *                  type: number
- *                  example: 2.25
+ *               halal:
+ *                 type: boolean
+ *                 example: true
  *               ingredients:
  *                 type: array
  *                 items:
@@ -165,11 +182,32 @@ router.get('/:id', getMenuItemById);
  *                     price:
  *                       type: number
  *                       example: 0.50
+ *               nutrition:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     protein:
+ *                       type: number
+ *                       example: 10
+ *                     fat:
+ *                       type: number
+ *                       example: 5
+ *                     carbs:
+ *                       type: number
+ *                       example: 20
+ *                     sugar:
+ *                       type: number
+ *                       example: 8
+ *                     calories:
+ *                       type: number
+ *                       example: 180
  *     responses:
  *       200:
  *         description: Menu item updated
  */
 router.put('/:id', updateMenuItem);
+
 
 /**
  * @swagger
