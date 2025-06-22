@@ -14,18 +14,27 @@ const AddonSchema = new mongoose.Schema({
     price: { type: Number, default: 0 }
 }, { _id: false });
 
+const NutritionalSchema = new mongoose.Schema({
+    _id: { type: Number },
+    protein: { type: Number, required: false },
+    fat: { type: Number, required: false },
+    carbs: { type: Number, required: false},
+    sugar: { type: Number, required: false },
+    calories: { type: Number, required: false }
+}, { _id: false });
+
 const MenuItemSchema = new mongoose.Schema({
     _id: { type: Number },
     name: { type: String, required: true },
     mainCategory: { type: String, required: true },
     menuCategory: { type: String, required: true },
     description: { type: String },
-    protein: { type: Number, required: true },
     webPrice: { type: Number, required: true },
     uberPrice: { type: Number, required: true },
-    inHousePrice: { type: Number, required: true },
+    halal: { type: Boolean, required: false },
     ingredients: { type: [MenuItemIngredientSchema], default: [] },
-    addons: { type: [AddonSchema], default: [] }
+    addons: { type: [AddonSchema], default: [] },
+    nutrition : { type: [NutritionalSchema], default: [] }
 }, { _id: false });
 
 MenuItemSchema.pre('save', async function(next) {

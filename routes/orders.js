@@ -40,6 +40,12 @@ const {
  *               totalPrice:
  *                 type: number
  *                 example: 19.99
+ *               orderTime:
+ *                 type: number
+ *                 example: 1719055200000
+ *               paymentMethod:
+ *                 type: string
+ *                 example: Cash
  *               items:
  *                 type: array
  *                 items:
@@ -47,8 +53,10 @@ const {
  *                   properties:
  *                     menuItemId:
  *                       type: integer
+ *                       example: 101
  *                     quantity:
  *                       type: integer
+ *                       example: 2
  *                     selectedAddons:
  *                       type: array
  *                       items:
@@ -66,6 +74,7 @@ const {
  */
 router.post('/', placeOrder);
 
+
 /**
  * @swagger
  * /orders:
@@ -81,19 +90,34 @@ router.post('/', placeOrder);
  *               items:
  *                 type: object
  *                 properties:
+ *                   orderId:
+ *                     type: string
+ *                     example: CUSTOM-001
  *                   customerName:
  *                     type: string
+ *                     example: John Doe
  *                   customerPhone:
  *                     type: string
+ *                     example: 0771234567
  *                   orderType:
  *                     type: string
+ *                     example: Takeaway
  *                   orderStatus:
  *                     type: string
+ *                     example: Pending
  *                   totalPrice:
  *                     type: number
+ *                     example: 19.99
+ *                   orderTime:
+ *                     type: number
+ *                     example: 1719055200000
+ *                   paymentMethod:
+ *                     type: string
+ *                     example: Cash
  *                   orderDate:
  *                     type: string
  *                     format: date-time
+ *                     example: 2025-06-22T15:30:00.000Z
  *                   items:
  *                     type: array
  *                     items:
@@ -101,8 +125,10 @@ router.post('/', placeOrder);
  *                       properties:
  *                         menuItemId:
  *                           type: integer
+ *                           example: 101
  *                         quantity:
  *                           type: integer
+ *                           example: 2
  *                         selectedAddons:
  *                           type: array
  *                           items:
@@ -110,10 +136,13 @@ router.post('/', placeOrder);
  *                             properties:
  *                               ingredientId:
  *                                 type: integer
+ *                                 example: 3
  *                               quantity:
  *                                 type: integer
+ *                                 example: 2
  */
 router.get('/', getAllOrders);
+
 
 /**
  * @swagger
