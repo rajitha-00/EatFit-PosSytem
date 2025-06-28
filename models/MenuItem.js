@@ -32,6 +32,7 @@ const MenuItemSchema = new mongoose.Schema({
     webPrice: { type: Number, required: true },
     uberPrice: { type: Number, required: true },
     halal: { type: Boolean, required: false },
+    imageurl:{ type: String, required: true },
     ingredients: { type: [MenuItemIngredientSchema], default: [] },
     addons: { type: [AddonSchema], default: [] },
     nutrition : { type: [NutritionalSchema], default: [] }

@@ -6,7 +6,8 @@ const {
     getAllMenuItems,
     getMenuItemById,
     updateMenuItem,
-    deleteMenuItem
+    deleteMenuItem,
+    upload
 } = require('../controllers/menuItemCtrl');
 
 /**
@@ -24,13 +25,22 @@ router.get('/', getAllMenuItems);
  * @swagger
  * /menu-items:
  *   post:
- *     summary: Create a new menu item
+ *     summary: Create a new menu item with image upload
+ *     consumes:
+ *       - multipart/form-data
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - mainCategory
+ *               - menuCategory
+ *               - webPrice
+ *               - uberPrice
+ *               - image
  *             properties:
  *               name:
  *                 type: string
@@ -46,56 +56,23 @@ router.get('/', getAllMenuItems);
  *                 type: number
  *               halal:
  *                 type: boolean
+ *               image:
+ *                 type: string
+ *                 format: binary
  *               ingredients:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     ingredientId:
- *                       type: integer
- *                       example: 1
- *                     quantityNeeded:
- *                       type: integer
- *                       example: 2
+ *                 type: string
+ *                 description: JSON stringified array of ingredients
  *               addons:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     ingredientId:
- *                       type: integer
- *                       example: 3
- *                     quantityNeeded:
- *                       type: integer
- *                       example: 1
- *                     price:
- *                       type: number
- *                       example: 0.50
+ *                 type: string
+ *                 description: JSON stringified array of addons
  *               nutrition:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     protein:
- *                       type: number
- *                       example: 10
- *                     fat:
- *                       type: number
- *                       example: 5
- *                     carbs:
- *                       type: number
- *                       example: 20
- *                     sugar:
- *                       type: number
- *                       example: 8
- *                     calories:
- *                       type: number
- *                       example: 180
+ *                 type: string
+ *                 description: JSON stringified array of nutrition objects
  *     responses:
  *       201:
  *         description: Menu item created
  */
-router.post('/', createMenuItem);
+router.post('/', upload, createMenuItem); // ⬅️ this line
 
 
 /**
@@ -154,6 +131,9 @@ router.get('/:id', getMenuItemById);
  *               halal:
  *                 type: boolean
  *                 example: true
+ *               imageurl:
+ *                 type: string
+ *                 example: "https://res.cloudinary.com/demo/image/upload/v1710000000/item.jpg"
  *               ingredients:
  *                 type: array
  *                 items:
