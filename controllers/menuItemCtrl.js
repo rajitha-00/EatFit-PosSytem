@@ -14,19 +14,26 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-exports.upload = upload.single('image'); // Middleware
+exports.upload = upload.single('image'); // ✅ ADD THIS BACK
+
+exports.uploadImageOnly = async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: 'No image file provided' });
+
+        const imageUrl = await uploadToCloudinary(req.file.path);
+        fs.unlinkSync(req.file.path); // Delete local file
+
+        res.status(200).json({ imageUrl });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 exports.createMenuItem = async (req, res) => {
     try {
-        let imageUrl = '';
-        if (req.file) {
-            imageUrl = await uploadToCloudinary(req.file.path);
-            fs.unlinkSync(req.file.path); // Delete local file
-        }
 
         const menuItemData = {
             ...req.body,
-            imageUrl
         };
 
         const menuItem = new MenuItem(menuItemData);
