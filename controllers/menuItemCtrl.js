@@ -1,27 +1,18 @@
 // controllers/menuItemCtrl.js
 const MenuItem = require('../models/MenuItem');
-const multer = require('multer');
 const path = require('path');
-const uploadToCloudinary = require("../utils/cloudinaryUploader");
+const uploadToCloudinaryBuffer = require("../utils/cloudinaryUploader");
 const fs = require('fs');
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, 'uploads/'),
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage });
-
-exports.upload = upload.single('image'); // ✅ ADD THIS BACK
+exports.upload = upload.single('image');
 
 exports.uploadImageOnly = async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'No image file provided' });
 
-        const imageUrl = await uploadToCloudinary(req.file.path);
-        fs.unlinkSync(req.file.path); // Delete local file
+        const imageUrl = await uploadToCloudinaryBuffer(req.file.buffer);
 
         res.status(200).json({ imageUrl });
     } catch (err) {

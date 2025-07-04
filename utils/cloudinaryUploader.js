@@ -1,3 +1,4 @@
+const {createReadStream} = require("streamifier");
 const cloudinary = require('cloudinary').v2;
 
 // Replace with your actual credentials
@@ -7,11 +8,17 @@ cloudinary.config({
     api_secret: 'ZzRcbQVofX47iyCgsQ_0AUoZNNk'
 });
 
-const uploadToCloudinary = async (filePath) => {
-    const result = await cloudinary.uploader.upload(filePath, {
-        folder: 'menuItems'  // Optional folder name in Cloudinary
+const uploadToCloudinaryBuffer = (buffer) => {
+    return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+            { folder: 'menuItems' },
+            (error, result) => {
+                if (result) resolve(result.secure_url);
+                else reject(error);
+            }
+        );
+        createReadStream(buffer).pipe(uploadStream);
     });
-    return result.secure_url; // URL of the uploaded image
 };
 
-module.exports = uploadToCloudinary;
+module.exports = uploadToCloudinaryBuffer;
