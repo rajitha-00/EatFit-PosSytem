@@ -23,7 +23,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: 'http://localhost:5000/api'
+                url: 'https://eatfit-possytem.onrender.com/api'
             }
         ]
     },
