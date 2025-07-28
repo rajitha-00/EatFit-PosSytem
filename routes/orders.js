@@ -30,6 +30,9 @@ const {
  *               customerPhone:
  *                 type: string
  *                 example: 0771234567
+ *               customerAddress:
+ *                 type: string
+ *                 example: address
  *               orderType:
  *                 type: string
  *                 example: Takeaway
@@ -99,6 +102,9 @@ router.post('/', placeOrder);
  *                   customerPhone:
  *                     type: string
  *                     example: 0771234567
+ *                   customerAddress:
+ *                      type: string
+ *                      example: address
  *                   orderType:
  *                     type: string
  *                     example: Takeaway

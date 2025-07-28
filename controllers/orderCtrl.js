@@ -64,6 +64,7 @@ exports.placeOrder = async (req, res) => {
             orderId,
             customerName,
             customerPhone,
+            customerAddress,
             orderType,
             orderStatus,
             totalPrice,
