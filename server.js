@@ -23,7 +23,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: 'https://eatfit-possytem.onrender.com/api'
+                url: 'https://eatfit-possytem-production.up.railway.app/api'
             }
         ]
     },
@@ -45,10 +45,12 @@ mongoose.connect(process.env.MONGODB_URI, {
 const ingRouter = require('./routes/ingredients');
 const miRouter = require('./routes/menuItems');
 const ordRouter = require('./routes/orders');
+const paymentRoutes = require("./routes/payments");
 
 app.use('/api/ingredients', ingRouter);
 app.use('/api/menu-items', miRouter);
 app.use('/api/orders', ordRouter);
+app.use("/api/payments", paymentRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
