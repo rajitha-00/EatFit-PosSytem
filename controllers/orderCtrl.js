@@ -14,7 +14,7 @@ async function getNextOrderId() {
 }
 
 exports.placeOrder = async (req, res) => {
-    const { orderId, customerName, customerPhone, orderType, orderStatus, totalPrice, items } = req.body;
+    const { orderId, customerName, customerPhone, customerAddress, orderType, orderStatus, totalPrice, items } = req.body;
 
     if (!Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ error: 'Order must have at least one item' });
