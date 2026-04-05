@@ -14,10 +14,14 @@ async function getNextOrderId() {
 }
 
 exports.placeOrder = async (req, res) => {
-    const { orderId, customerName, customerPhone, customerAddress, orderType, orderStatus, totalPrice, items } = req.body;
+    const { orderId, customerName, customerPhone, customerAddress, orderType, orderStatus, totalPrice, items, paymentMethod, bankTransferReference } = req.body;
 
     if (!Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ error: 'Order must have at least one item' });
+    }
+
+    if (paymentMethod === 'online bank transfer' && !bankTransferReference) {
+        return res.status(400).json({ error: 'Bank transfer reference is required for online bank transfer payment method' });
     }
 
     try {
@@ -98,7 +102,9 @@ exports.placeOrder = async (req, res) => {
             orderType,
             orderStatus,
             totalPrice,
-            items
+            items,
+            paymentMethod,
+            bankTransferReference
         });
 
         await order.save();
