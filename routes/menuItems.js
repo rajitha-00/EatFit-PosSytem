@@ -38,11 +38,8 @@ router.get('/', getAllMenuItems);
  *             type: object
  *             required:
  *               - name
- *               - mainCategory
- *               - menuCategory
  *               - webPrice
  *               - uberPrice
- *               - imageurl
  *             properties:
  *               name:
  *                 type: string

@@ -43,49 +43,49 @@ exports.placeOrder = async (req, res) => {
 
             // Deduct base ingredients
             for (const mi of menuItem.ingredients) {
-                const qty = mi.quantityNeeded * orderItem.quantity;
+              const qty = mi.quantityNeeded * orderItem.quantity;
 
-                const ingredient = await Ingredient.findById(mi.ingredientId);
-                if (!ingredient) {
-                    return res.status(404).json({ error: `Ingredient ${mi.ingredientId} not found` });
-                }
+              const ingredient = await Ingredient.findById(mi.ingredientId);
+              if (!ingredient) {
+                return res
+                  .status(404)
+                  .json({ error: `Ingredient ${mi.ingredientId} not found` });
+              }
 
-                if (ingredient.availableQuantity < qty) {
-                    return res.status(400).json({
-                        error: `Insufficient stock for ingredient: ${ingredient.name}`
-                    });
-                }
+              // Removed insufficient stock check to allow orders to proceed regardless of stock levels
 
-                await Ingredient.findByIdAndUpdate(mi.ingredientId, {
-                    $inc: { availableQuantity: -qty },
-                    $set: { updatedDate: new Date() }
-                });
+              await Ingredient.findByIdAndUpdate(mi.ingredientId, {
+                $inc: { availableQuantity: -qty },
+                $set: { updatedDate: new Date() },
+              });
             }
 
             // Deduct addon ingredients
             for (const selectedAddon of orderItem.selectedAddons || []) {
-                const addon = menuItem.addons.find(
-                    a => a.ingredientId === selectedAddon.ingredientId
+              const addon = menuItem.addons.find(
+                (a) => a.ingredientId === selectedAddon.ingredientId
+              );
+              if (addon) {
+                const totalQty = addon.quantityNeeded * selectedAddon.quantity;
+
+                const ingredient = await Ingredient.findById(
+                  selectedAddon.ingredientId
                 );
-                if (addon) {
-                    const totalQty = addon.quantityNeeded * selectedAddon.quantity;
-
-                    const ingredient = await Ingredient.findById(selectedAddon.ingredientId);
-                    if (!ingredient) {
-                        return res.status(404).json({ error: `Addon ingredient ${selectedAddon.ingredientId} not found` });
-                    }
-
-                    if (ingredient.availableQuantity < totalQty) {
-                        return res.status(400).json({
-                            error: `Insufficient stock for addon ingredient: ${ingredient.name}`
-                        });
-                    }
-
-                    await Ingredient.findByIdAndUpdate(selectedAddon.ingredientId, {
-                        $inc: { availableQuantity: -totalQty },
-                        $set: { updatedDate: new Date() }
+                if (!ingredient) {
+                  return res
+                    .status(404)
+                    .json({
+                      error: `Addon ingredient ${selectedAddon.ingredientId} not found`,
                     });
                 }
+
+                // Removed insufficient stock check to allow orders to proceed regardless of addon stock levels
+
+                await Ingredient.findByIdAndUpdate(selectedAddon.ingredientId, {
+                  $inc: { availableQuantity: -totalQty },
+                  $set: { updatedDate: new Date() },
+                });
+              }
             }
         }
 
